@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:lecle_downloads_path_provider/lecle_downloads_path_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:crypto/crypto.dart';
 import 'package:convert/convert.dart';
@@ -34,16 +35,23 @@ class ALDownloaderPersistentFileManager {
     // file name
     final fileName = _assembleFileName(url, model);
 
-    final theRootDir = await _theRootDir;
-    final dirForRootToFinalLevel = theRootDir + extensionResourcePath;
+    // download dir
+    final downloadDir = await lazyGetAbsolutePathOfDownload();
 
-    await _ALDownloaderFilePathManager.tryToCreateCustomDirectory(
-        dirForRootToFinalLevel,
-        recursive: true);
+    if (downloadDir == null) {
+      final theRootDir = await _theRootDir;
+      final dirForRootToFinalLevel = theRootDir + extensionResourcePath;
 
-    // level 2 folder - complete
-    final dirForRootToFirstLevel = theRootDir + dir;
-    return ALDownloaderPathComponentModel(dirForRootToFirstLevel, fileName);
+      await _ALDownloaderFilePathManager.tryToCreateCustomDirectory(
+          dirForRootToFinalLevel,
+          recursive: true);
+
+      // level 2 folder - complete
+      final dirForRootToFirstLevel = theRootDir + dir;
+      return ALDownloaderPathComponentModel(dirForRootToFirstLevel, fileName);
+    }
+
+    return ALDownloaderPathComponentModel(downloadDir, fileName);
   }
 
   /// Get 'physical directory path' for [url]
@@ -61,6 +69,18 @@ class ALDownloaderPersistentFileManager {
     final alDownloaderPathComponentModel =
         await lazyGetALDownloaderPathModelForUrl(url); // model
     final dirPath = alDownloaderPathComponentModel.dir;
+
+    return dirPath;
+  }
+
+  /// Get 'download path'
+  ///
+  /// **return**
+  ///
+  /// directory path
+  static Future<String?> lazyGetAbsolutePathOfDownload() async {
+    final dir = await DownloadsPath.downloadsDirectory();
+    final dirPath = dir?.path;
 
     return dirPath;
   }

@@ -96,7 +96,15 @@ class ALDownloaderFileTypeJudge {
     ".flv"
   ];
 
-  static final _others = [".pdf"];
+  static final _others = [
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".ppt",
+    ".pptx",
+  ];
 }
 
 /// An enumeration of file type

@@ -41,7 +41,9 @@ class ALDownloader {
   ///
   /// It is an one-off interface which will be destroyed when the download succeeded/failed.
   static Future<void> download(String? url,
-      {ALDownloaderHandlerInterface? downloaderHandlerInterface}) async {
+      {ALDownloaderHandlerInterface? downloaderHandlerInterface,
+      String? fileName,
+      bool? openFromNotification}) async {
     if (url == null)
       throw "ALDownloader | try to download url, but url is null";
 
@@ -86,9 +88,9 @@ class ALDownloader {
       final taskId = await FlutterDownloader.enqueue(
           url: url,
           savedDir: dir,
-          fileName: alDownloaderPathComponentModel.fileName,
-          showNotification: false,
-          openFileFromNotification: false);
+          fileName: fileName ?? alDownloaderPathComponentModel.fileName,
+          showNotification: Platform.isAndroid,
+          openFileFromNotification: openFromNotification ?? false);
 
       if (taskId != null) {
         aldDebugPrint(
