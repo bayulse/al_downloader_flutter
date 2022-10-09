@@ -38,7 +38,7 @@ class ALDownloaderPersistentFileManager {
     // download dir
     final downloadDir = await lazyGetAbsolutePathOfDownload();
 
-    if (downloadDir == null) {
+    if (downloadDir == null || Platform.isIOS) {
       final theRootDir = await _theRootDir;
       final dirForRootToFinalLevel = theRootDir + extensionResourcePath;
 
